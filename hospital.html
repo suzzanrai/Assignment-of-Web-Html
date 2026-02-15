@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Q5 Hospital Appointment</title>
+  <style>
+    body{font-family:system-ui,Arial;margin:24px;max-width:820px}
+    form{border:1px solid #ddd;border-radius:12px;padding:16px}
+    label{display:block;margin-top:12px;font-weight:600}
+    input,select{width:100%;padding:10px;border:1px solid #ccc;border-radius:10px;margin-top:6px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .error{color:#b00020;margin-top:10px}
+    button{margin-top:14px;padding:10px 14px;border:0;border-radius:10px;background:#111;color:#fff;cursor:pointer}
+  </style>
+</head>
+<body>
+  <h2>Q5) Hospital Appointment Booking Form</h2>
+
+  <form id="form_hospital_ROLL" novalidate>
+    <label for="patient_ROLL">Patient Name</label>
+    <input type="text" id="patient_ROLL" name="patient_ROLL" />
+
+    <div class="row">
+      <div>
+        <label for="hage_ROLL">Age</label>
+        <input type="number" id="hage_ROLL" name="hage_ROLL" />
+      </div>
+      <div>
+        <label for="hphone_ROLL">Phone Number</label>
+        <input type="text" id="hphone_ROLL" name="hphone_ROLL" placeholder="98XXXXXXXX or 97XXXXXXXX" />
+      </div>
+    </div>
+
+    <label for="dept_ROLL">Department</label>
+    <select id="dept_ROLL" name="dept_ROLL">
+      <option value="">-- Select Department --</option>
+      <option value="General">General</option>
+      <option value="ENT">ENT</option>
+      <option value="Orthopedic">Orthopedic</option>
+      <option value="Cardiology">Cardiology</option>
+    </select>
+
+    <div class="row">
+      <div>
+        <label for="adate_ROLL">Appointment Date</label>
+        <input type="date" id="adate_ROLL" name="adate_ROLL" />
+      </div>
+      <div>
+        <label for="slot_ROLL">Time Slot</label>
+        <select id="slot_ROLL" name="slot_ROLL">
+          <option value="">-- Select Time Slot --</option>
+          <option value="10:00 AM - 11:00 AM">10:00 AM - 11:00 AM</option>
+          <option value="11:00 AM - 12:00 PM">11:00 AM - 12:00 PM</option>
+          <option value="01:00 PM - 02:00 PM">01:00 PM - 02:00 PM</option>
+          <option value="02:00 PM - 03:00 PM">02:00 PM - 03:00 PM</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="msg_ROLL" class="error"></div>
+    <button type="submit">Book Appointment</button>
+  </form>
+
+  <script>
+    (function(){
+      const form = document.getElementById("form_hospital_ROLL");
+      const msg = document.getElementById("msg_ROLL");
+
+      const nameEl = document.getElementById("patient_ROLL");
+      const ageEl  = document.getElementById("hage_ROLL");
+      const phoneEl= document.getElementById("hphone_ROLL");
+      const deptEl = document.getElementById("dept_ROLL");
+      const dateEl = document.getElementById("adate_ROLL");
+      const slotEl = document.getElementById("slot_ROLL");
+
+      const onlyLetters = /^[A-Za-z\s]+$/;
+      const phoneNP = /^(98|97)\d{8}$/;
+
+      function isPastDate(dateStr){
+        const selected = new Date(dateStr);
+        const today = new Date();
+        // compare by date only
+        selected.setHours(0,0,0,0);
+        today.setHours(0,0,0,0);
+        return selected < today;
+      }
+
+      form.addEventListener("submit", function(e){
+        e.preventDefault();
+        msg.textContent = "";
+
+        const patient = nameEl.value.trim();
+        const age = Number(ageEl.value);
+        const phone = phoneEl.value.trim();
+        const dept = deptEl.value;
+        const adate = dateEl.value;
+        const slot = slotEl.value;
+
+        if (!patient || ageEl.value === "" || !phone || !dept || !adate || !slot){
+          msg.textContent = "Error: Please fill all fields.";
+          return;
+        }
+        if (!onlyLetters.test(patient)){
+          msg.textContent = "Error: Name must contain only letters and spaces.";
+          return;
+        }
+        if (!(age > 0)){
+          msg.textContent = "Error: Age must be greater than 0.";
+          return;
+        }
+        if (!phoneNP.test(phone)){
+          msg.textContent = "Error: Phone must be 10 digits and start with 98 or 97.";
+          return;
+        }
+        if (isPastDate(adate)){
+          msg.textContent = "Error: Appointment date cannot be in the past.";
+          return;
+        }
+
+        alert(`✅ Appointment booked successfully for ${patient}.`);
+        form.reset();
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Q2 Mark Sheet</title>
+  <style>
+    body{font-family:system-ui,Arial;margin:24px;max-width:820px}
+    form{border:1px solid #ddd;border-radius:12px;padding:16px}
+    label{display:block;margin-top:12px;font-weight:600}
+    input{width:100%;padding:10px;border:1px solid #ccc;border-radius:10px;margin-top:6px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .error{color:#b00020;margin-top:10px}
+    .resultBox{margin-top:14px;border:1px dashed #aaa;border-radius:12px;padding:12px}
+    button{margin-top:14px;padding:10px 14px;border:0;border-radius:10px;background:#111;color:#fff;cursor:pointer}
+  </style>
+</head>
+<body>
+  <h2>Q2) Student Mark Sheet Generator</h2>
+
+  <form id="form_marks_ROLL" novalidate>
+    <div class="row">
+      <div>
+        <label for="studentname_ROLL">Student Name</label>
+        <input type="text" id="studentname_ROLL" name="studentname_ROLL" />
+      </div>
+      <div>
+        <label for="rollno_ROLL">Roll Number</label>
+        <input type="number" id="rollno_ROLL" name="rollno_ROLL" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="eng_ROLL">Marks in English (0-100)</label>
+        <input type="number" id="eng_ROLL" name="eng_ROLL" />
+      </div>
+      <div>
+        <label for="math_ROLL">Marks in Math (0-100)</label>
+        <input type="number" id="math_ROLL" name="math_ROLL" />
+      </div>
+    </div>
+
+    <label for="sci_ROLL">Marks in Science (0-100)</label>
+    <input type="number" id="sci_ROLL" name="sci_ROLL" />
+
+    <div id="msg_ROLL" class="error"></div>
+
+    <button type="submit">Generate Marksheet</button>
+
+    <div id="output_ROLL" class="resultBox" style="display:none"></div>
+  </form>
+
+  <script>
+    (function(){
+      const form = document.getElementById("form_marks_ROLL");
+      const msg  = document.getElementById("msg_ROLL");
+      const out  = document.getElementById("output_ROLL");
+
+      const nameEl = document.getElementById("studentname_ROLL");
+      const rollEl = document.getElementById("rollno_ROLL");
+      const engEl  = document.getElementById("eng_ROLL");
+      const mathEl = document.getElementById("math_ROLL");
+      const sciEl  = document.getElementById("sci_ROLL");
+
+      function inRange0to100(x){ return Number.isFinite(x) && x >= 0 && x <= 100; }
+
+      function gradeFromPercentage(pct){
+        if (pct >= 80) return "A";
+        if (pct >= 60) return "B";
+        if (pct >= 40) return "C";
+        return "Fail";
+      }
+
+      form.addEventListener("submit", function(e){
+        e.preventDefault();
+        msg.textContent = "";
+        out.style.display = "none";
+        out.innerHTML = "";
+
+        const studentName = nameEl.value.trim();
+        const rollNo = rollEl.value;
+        const eng = Number(engEl.value);
+        const math = Number(mathEl.value);
+        const sci = Number(sciEl.value);
+
+        if (!studentName || !rollNo || engEl.value === "" || mathEl.value === "" || sciEl.value === "") {
+          msg.textContent = "Error: No field can be empty.";
+          return;
+        }
+        if (!inRange0to100(eng) || !inRange0to100(math) || !inRange0to100(sci)) {
+          msg.textContent = "Error: Marks must be between 0 and 100.";
+          return;
+        }
+
+        const total = eng + math + sci;
+        const percentage = (total / 300) * 100;
+
+        const passed = eng >= 40 && math >= 40 && sci >= 40;
+        const result = passed ? "Pass" : "Fail";
+
+        const grade = passed ? gradeFromPercentage(percentage) : "Fail";
+
+        out.innerHTML = `
+          <h3>Marksheet</h3>
+          <p><b>Name:</b> ${studentName}</p>
+          <p><b>Roll No:</b> ${rollNo}</p>
+          <hr />
+          <p><b>English:</b> ${eng}</p>
+          <p><b>Math:</b> ${math}</p>
+          <p><b>Science:</b> ${sci}</p>
+          <hr />
+          <p><b>Total Marks:</b> ${total} / 300</p>
+          <p><b>Percentage:</b> ${percentage.toFixed(2)}%</p>
+          <p><b>Result:</b> ${result}</p>
+          <p><b>Grade:</b> ${grade}</p>
+        `;
+        out.style.display = "block";
+      });
+    })();
+  </script>
+</body>
+</html>

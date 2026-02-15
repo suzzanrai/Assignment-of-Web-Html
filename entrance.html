@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Q1 Entrance Exam Registration</title>
+  <style>
+    body{font-family:system-ui,Arial;margin:24px;max-width:820px}
+    form{border:1px solid #ddd;border-radius:12px;padding:16px}
+    label{display:block;margin-top:12px;font-weight:600}
+    input,select{width:100%;padding:10px;border:1px solid #ccc;border-radius:10px;margin-top:6px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .radioRow{display:flex;gap:16px;align-items:center;margin-top:6px}
+    .radioRow input{width:auto}
+    .error{color:#b00020;margin-top:10px}
+    .success{color:#0a7a2f;margin-top:10px;font-weight:700}
+    button{margin-top:14px;padding:10px 14px;border:0;border-radius:10px;background:#111;color:#fff;cursor:pointer}
+    button:hover{opacity:.9}
+  </style>
+</head>
+<body>
+  <h2>Q1) Entrance Exam Registration Form</h2>
+
+  <!-- Replace ROLL with your roll number or name everywhere -->
+  <form id="form_entrance_ROLL" novalidate>
+    <div class="row">
+      <div>
+        <label for="fullname_ROLL">Full Name</label>
+        <input type="text" id="fullname_ROLL" name="fullname_ROLL" placeholder="Your full name" />
+      </div>
+      <div>
+        <label for="dob_ROLL">Date of Birth</label>
+        <input type="date" id="dob_ROLL" name="dob_ROLL" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="age_ROLL">Age</label>
+        <input type="number" id="age_ROLL" name="age_ROLL" placeholder="16 - 30" />
+      </div>
+      <div>
+        <label for="phone_ROLL">Phone Number</label>
+        <input type="text" id="phone_ROLL" name="phone_ROLL" placeholder="98XXXXXXXX or 97XXXXXXXX" />
+      </div>
+    </div>
+
+    <label for="email_ROLL">Email Address</label>
+    <input type="text" id="email_ROLL" name="email_ROLL" placeholder="example@mail.com" />
+
+    <label>Gender</label>
+    <div class="radioRow">
+      <label><input type="radio" id="gender_male_ROLL" name="gender_ROLL" value="Male"> Male</label>
+      <label><input type="radio" id="gender_female_ROLL" name="gender_ROLL" value="Female"> Female</label>
+      <label><input type="radio" id="gender_other_ROLL" name="gender_ROLL" value="Other"> Other</label>
+    </div>
+
+    <label for="stream_ROLL">Exam Stream</label>
+    <select id="stream_ROLL" name="stream_ROLL">
+      <option value="">-- Select Stream --</option>
+      <option value="Science">Science</option>
+      <option value="Management">Management</option>
+      <option value="Arts">Arts</option>
+    </select>
+
+    <div style="margin-top:12px">
+      <label style="font-weight:600;display:flex;gap:10px;align-items:center">
+        <input type="checkbox" id="agree_ROLL" name="agree_ROLL" style="width:auto;margin:0" />
+        I confirm all details are correct
+      </label>
+    </div>
+
+    <div id="msg_ROLL" class="error"></div>
+    <div id="success_ROLL" class="success" style="display:none"></div>
+
+    <button type="submit" id="submit_ROLL">Submit</button>
+  </form>
+
+  <script>
+    (function () {
+      const nameEl = document.getElementById("fullname_ROLL");
+      const dobEl  = document.getElementById("dob_ROLL");
+      const ageEl  = document.getElementById("age_ROLL");
+      const phoneEl= document.getElementById("phone_ROLL");
+      const emailEl= document.getElementById("email_ROLL");
+      const streamEl=document.getElementById("stream_ROLL");
+      const agreeEl=document.getElementById("agree_ROLL");
+      const msgEl  = document.getElementById("msg_ROLL");
+      const successEl = document.getElementById("success_ROLL");
+      const formEl = document.getElementById("form_entrance_ROLL");
+
+      const onlyLetters = /^[A-Za-z\s]+$/;
+      const phoneNP = /^(98|97)\d{8}$/;
+      const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      function getSelectedGender() {
+        const selected = document.querySelector('input[name="gender_ROLL"]:checked');
+        return selected ? selected.value : "";
+      }
+
+      formEl.addEventListener("submit", function (e) {
+        e.preventDefault();
+        msgEl.textContent = "";
+        successEl.style.display = "none";
+        successEl.textContent = "";
+
+        const fullName = nameEl.value.trim();
+        const dob = dobEl.value;
+        const age = Number(ageEl.value);
+        const phone = phoneEl.value.trim();
+        const email = emailEl.value.trim();
+        const gender = getSelectedGender();
+        const stream = streamEl.value;
+        const agreed = agreeEl.checked;
+
+        if (!fullName || !dob || !ageEl.value || !phone || !email || !gender || !stream || !agreed) {
+          msgEl.textContent = "Error: All fields are required (including gender, stream, and agreement).";
+          return;
+        }
+        if (!onlyLetters.test(fullName)) {
+          msgEl.textContent = "Error: Name must contain only letters and spaces.";
+          return;
+        }
+        if (age < 16 || age > 30) {
+          msgEl.textContent = "Error: Age must be between 16 and 30.";
+          return;
+        }
+        if (!phoneNP.test(phone)) {
+          msgEl.textContent = "Error: Phone must be 10 digits and start with 98 or 97.";
+          return;
+        }
+        if (!emailOk.test(email)) {
+          msgEl.textContent = "Error: Please enter a valid email address.";
+          return;
+        }
+        if (stream === "") {
+          msgEl.textContent = "Error: Please select an exam stream.";
+          return;
+        }
+
+        successEl.textContent = "✅ Registration successful! Page will refresh in 5 seconds...";
+        successEl.style.display = "block";
+
+        setTimeout(() => {
+          location.reload();
+        }, 5000);
+      });
+    })();
+  </script>
+</body>
+</html>

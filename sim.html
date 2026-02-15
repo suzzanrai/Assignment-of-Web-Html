@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Q3 SIM Registration</title>
+  <style>
+    body{font-family:system-ui,Arial;margin:24px;max-width:820px}
+    form{border:1px solid #ddd;border-radius:12px;padding:16px}
+    label{display:block;margin-top:12px;font-weight:600}
+    input,select{width:100%;padding:10px;border:1px solid #ccc;border-radius:10px;margin-top:6px}
+    .radioRow{display:flex;gap:16px;align-items:center;margin-top:6px}
+    .radioRow input{width:auto}
+    .error{color:#b00020;margin-top:10px}
+    .success{color:#0a7a2f;margin-top:10px;font-weight:700}
+    button{margin-top:14px;padding:10px 14px;border:0;border-radius:10px;background:#111;color:#fff;cursor:pointer}
+  </style>
+</head>
+<body>
+  <h2>Q3) SIM Card Registration Form</h2>
+
+  <form id="form_sim_ROLL" novalidate>
+    <label for="sim_fullname_ROLL">Full Name</label>
+    <input type="text" id="sim_fullname_ROLL" name="sim_fullname_ROLL" />
+
+    <label for="citizenship_ROLL">Citizenship Number</label>
+    <input type="text" id="citizenship_ROLL" name="citizenship_ROLL" placeholder="At least 10 characters" />
+
+    <label>SIM Type</label>
+    <div class="radioRow">
+      <label><input type="radio" id="sim_pre_ROLL" name="simtype_ROLL" value="Prepaid"> Prepaid</label>
+      <label><input type="radio" id="sim_post_ROLL" name="simtype_ROLL" value="Postpaid"> Postpaid</label>
+    </div>
+
+    <label for="sim_dob_ROLL">Date of Birth</label>
+    <input type="date" id="sim_dob_ROLL" name="sim_dob_ROLL" />
+
+    <label for="nationality_ROLL">Nationality</label>
+    <select id="nationality_ROLL" name="nationality_ROLL">
+      <option value="">-- Select Nationality --</option>
+      <option value="Nepali">Nepali</option>
+      <option value="Indian">Indian</option>
+      <option value="Other">Other</option>
+    </select>
+
+    <div style="margin-top:12px">
+      <label style="font-weight:600;display:flex;gap:10px;align-items:center">
+        <input type="checkbox" id="terms_ROLL" name="terms_ROLL" style="width:auto;margin:0" />
+        Accept Terms & Conditions
+      </label>
+    </div>
+
+    <div id="msg_ROLL" class="error"></div>
+    <div id="ok_ROLL" class="success" style="display:none"></div>
+
+    <button type="submit">Submit</button>
+  </form>
+
+  <script>
+    (function(){
+      const form = document.getElementById("form_sim_ROLL");
+      const msg  = document.getElementById("msg_ROLL");
+      const ok   = document.getElementById("ok_ROLL");
+
+      const nameEl = document.getElementById("sim_fullname_ROLL");
+      const citEl  = document.getElementById("citizenship_ROLL");
+      const dobEl  = document.getElementById("sim_dob_ROLL");
+      const natEl  = document.getElementById("nationality_ROLL");
+      const termsEl= document.getElementById("terms_ROLL");
+
+      const onlyLetters = /^[A-Za-z\s]+$/;
+
+      function ageFromDob(dobStr){
+        const dob = new Date(dobStr);
+        const today = new Date();
+        let age = today.getFullYear() - dob.getFullYear();
+        const m = today.getMonth() - dob.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
+        return age;
+      }
+
+      function getSimType(){
+        const selected = document.querySelector('input[name="simtype_ROLL"]:checked');
+        return selected ? selected.value : "";
+      }
+
+      form.addEventListener("submit", function(e){
+        e.preventDefault();
+        msg.textContent = "";
+        ok.style.display = "none";
+        ok.textContent = "";
+
+        const fullName = nameEl.value.trim();
+        const citizenship = citEl.value.trim();
+        const dob = dobEl.value;
+        const simType = getSimType();
+        const nationality = natEl.value;
+        const accepted = termsEl.checked;
+
+        if (!fullName || !citizenship || !dob || !simType || !nationality || !accepted){
+          msg.textContent = "Error: Please fill all required fields and accept terms.";
+          return;
+        }
+        if (!onlyLetters.test(fullName)){
+          msg.textContent = "Error: Name must contain only letters and spaces.";
+          return;
+        }
+        if (citizenship.length < 10){
+          msg.textContent = "Error: Citizenship number must be at least 10 characters.";
+          return;
+        }
+        const age = ageFromDob(dob);
+        if (age < 18){
+          msg.textContent = "Error: Age must be 18 or above.";
+          return;
+        }
+
+        ok.textContent = "✅ SIM registration successful!";
+        ok.style.display = "block";
+      });
+    })();
+  </script>
+</body>
+</html>
