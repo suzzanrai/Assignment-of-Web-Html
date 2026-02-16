@@ -1,127 +1,72 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Q4 Course Enrollment</title>
-  <style>
-    body{font-family:system-ui,Arial;margin:24px;max-width:820px}
-    form{border:1px solid #ddd;border-radius:12px;padding:16px}
-    label{display:block;margin-top:12px;font-weight:600}
-    input,select,textarea{width:100%;padding:10px;border:1px solid #ccc;border-radius:10px;margin-top:6px}
-    textarea{min-height:90px}
-    .radioRow{display:flex;gap:16px;align-items:center;margin-top:6px}
-    .radioRow input{width:auto}
-    button{margin-top:14px;padding:10px 14px;border:0;border-radius:10px;background:#111;color:#fff;cursor:pointer}
-    .success{color:#0a7a2f;margin-top:10px;font-weight:700}
-  </style>
+<title>Course Enrollment</title>
 </head>
 <body>
-  <h2>Q4) Online Course Enrollment Form</h2>
 
-  <form id="form_course_ROLL" novalidate>
-    <label for="course_name_ROLL">Student Name</label>
-    <input type="text" id="course_name_ROLL" name="course_name_ROLL" />
+<h2>Online Course Enrollment</h2>
 
-    <label for="course_email_ROLL">Email</label>
-    <input type="text" id="course_email_ROLL" name="course_email_ROLL" />
+<form id="form_course_sujanrai">
 
-    <label for="course_select_ROLL">Course Name</label>
-    <select id="course_select_ROLL" name="course_select_ROLL">
-      <option value="">-- Select Course --</option>
-      <option value="Web Development">Web Development</option>
-      <option value="Graphic Design">Graphic Design</option>
-      <option value="Data Analysis">Data Analysis</option>
-    </select>
+Name:
+<input type="text" id="course_name_sujanrai"><br><br>
 
-    <label>Mode of Study</label>
-    <div class="radioRow">
-      <label><input type="radio" id="mode_online_ROLL" name="mode_ROLL" value="Online"> Online</label>
-      <label><input type="radio" id="mode_offline_ROLL" name="mode_ROLL" value="Offline"> Offline</label>
-    </div>
+Email:
+<input type="text" id="course_email_sujanrai"><br><br>
 
-    <label>Previous Experience</label>
-    <div class="radioRow">
-      <label><input type="radio" id="exp_yes_ROLL" name="exp_ROLL" value="Yes"> Yes</label>
-      <label><input type="radio" id="exp_no_ROLL" name="exp_ROLL" value="No"> No</label>
-    </div>
+Course:
+<select id="course_select_sujanrai">
+<option value="">Select</option>
+<option>Web Development</option>
+<option>Graphic Design</option>
+<option>Data Analysis</option>
+</select><br><br>
 
-    <div id="expBox_ROLL" style="display:none">
-      <label for="exp_details_ROLL">Experience Details</label>
-      <textarea id="exp_details_ROLL" name="exp_details_ROLL" placeholder="Write your experience..."></textarea>
-    </div>
+Mode:
+<input type="radio" name="mode_sujanrai" value="Online">Online
+<input type="radio" name="mode_sujanrai" value="Offline">Offline<br><br>
 
-    <div id="ok_ROLL" class="success" style="display:none"></div>
+Experience:
+<input type="radio" name="exp_sujanrai" value="Yes">Yes
+<input type="radio" name="exp_sujanrai" value="No">No<br><br>
 
-    <button type="submit">Enroll</button>
-  </form>
+<textarea id="exp_details_sujanrai" placeholder="Experience Details"></textarea><br><br>
 
-  <script>
-    (function(){
-      const form = document.getElementById("form_course_ROLL");
-      const ok = document.getElementById("ok_ROLL");
+<button type="submit">Enroll</button>
 
-      const nameEl = document.getElementById("course_name_ROLL");
-      const emailEl= document.getElementById("course_email_ROLL");
-      const courseEl=document.getElementById("course_select_ROLL");
-      const expBox = document.getElementById("expBox_ROLL");
-      const expDetails = document.getElementById("exp_details_ROLL");
+</form>
 
-      const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+<script>
 
-      function getRadio(name){
-        const s = document.querySelector(`input[name="${name}"]:checked`);
-        return s ? s.value : "";
-      }
+document.getElementById("form_course_sujanrai").addEventListener("submit", function(e){
+e.preventDefault();
 
-      function handleExpUI(){
-        const exp = getRadio("exp_ROLL");
-        expBox.style.display = (exp === "Yes") ? "block" : "none";
-      }
+let name=document.getElementById("course_name_sujanrai").value;
+let email=document.getElementById("course_email_sujanrai").value;
+let course=document.getElementById("course_select_sujanrai").value;
+let emailPattern=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-      document.getElementById("exp_yes_ROLL").addEventListener("change", handleExpUI);
-      document.getElementById("exp_no_ROLL").addEventListener("change", handleExpUI);
+if(name=="" || email==""){
+alert("Name and Email required");
+return;
+}
 
-      form.addEventListener("submit", function(e){
-        e.preventDefault();
-        ok.style.display = "none";
-        ok.textContent = "";
+if(!emailPattern.test(email)){
+alert("Invalid Email");
+return;
+}
 
-        const studentName = nameEl.value.trim();
-        const email = emailEl.value.trim();
-        const course = courseEl.value;
-        const mode = getRadio("mode_ROLL");
-        const exp = getRadio("exp_ROLL");
+if(course==""){
+alert("Select course");
+return;
+}
 
-        if (!studentName || !email){
-          alert("Validation failed: Name and email are required.");
-          return;
-        }
-        if (!emailOk.test(email)){
-          alert("Validation failed: Email format is invalid.");
-          return;
-        }
-        if (course === ""){
-          alert("Validation failed: Please select a course.");
-          return;
-        }
-        if (!mode){
-          alert("Validation failed: Please select mode of study.");
-          return;
-        }
-        if (!exp){
-          alert("Validation failed: Please select previous experience (Yes/No).");
-          return;
-        }
-        if (exp === "Yes" && expDetails.value.trim() === ""){
-          alert("Validation failed: Experience details cannot be empty when experience = Yes.");
-          return;
-        }
+alert("Enrollment Successful!");
 
-        ok.textContent = "✅ Enrollment successful!";
-        ok.style.display = "block";
-      });
-    })();
-  </script>
+});
+
+</script>
+
 </body>
 </html>
